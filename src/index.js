@@ -18,8 +18,8 @@ class App extends Component {
   }
 
   render() {
-    const { userName, userColor } = this.props;
-    const { sendMessage } = this.props.actions;
+    const { userName, userColor, usersTypingList } = this.props;
+    const { sendMessage, startTyping } = this.props.actions;
 
     return (
       <div className="app">
@@ -27,6 +27,8 @@ class App extends Component {
           <MessagesList messages={this.props.messagesList} />
           <TypeArea
             onEnterPress={message => sendMessage(this.socket, userName, userColor, message)}
+            onChange={() => startTyping(this.socket, userName, userColor)}
+            usersTypingList={usersTypingList}
           />
         </div>
       </div>
@@ -34,9 +36,10 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { listenNewMessage, getUser } = this.props.actions;
+    const { listenNewMessage, getUser, listenUserWriting } = this.props.actions;
 
     listenNewMessage(this.socket);
+    listenUserWriting(this.socket);
     getUser(this.socket);
   }
 }

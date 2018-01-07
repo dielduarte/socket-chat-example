@@ -12,7 +12,8 @@ function mapStateToProps(state) {
   return {
     messagesList: state.chat.messagesList,
     userColor: state.chat.userColor,
-    userName: state.chat.userName
+    userName: state.chat.userName,
+    usersTypingList: state.chat.usersTypingList
   }
 }
 
