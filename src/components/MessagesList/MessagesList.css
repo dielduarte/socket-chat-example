@@ -1,0 +1,8 @@
+.messages-container {
+  margin: 5px 15px;
+  display: flex;
+}
+
+.messages-userName {
+  margin-right: 10px;
+}
