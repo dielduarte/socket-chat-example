@@ -7,6 +7,7 @@ const SEND_MESSAGE = 'chat/SEND_MESSAGE';
 const UPDATE_MESSAGES_LIST = 'chat/UPDATE_MESSAGES_LIST';
 const GET_USER = 'chat/GET_USER';
 const USER_START_TYPING = 'chat/USER_START_TYPING';
+const USER_STOP_TYPING = 'chat/USER_STOP_TYPING';
 const ADD_USER_ON_TYPING_LIST = 'chat/ADD_USER_ON_TYPING_LIST';
 const REMOVE_USER_ON_TYPING_LIST = 'chat/REMOVE_USER_ON_TYPING_LIST';
 
@@ -26,13 +27,18 @@ export const listenNewMessage = (socket) => dispatch => {
   dispatch({ type: REGISTER_NEW_MESSAGE_LISTEN });
   socket.on('new_message', newMessage => {
     dispatch({ type: UPDATE_MESSAGES_LIST , payload: { newMessage } })
-    dispatch({ type: REMOVE_USER_ON_TYPING_LIST, payload: { newMessage } });
+    dispatch({ type: REMOVE_USER_ON_TYPING_LIST, payload: { user: {...newMessage} } });
   });
 };
 
 export const startTyping = (socket, userName, userColor) => dispatch => {
   dispatch({ type: USER_START_TYPING });
   socket.emit('user_start_typing', { userName, userColor });
+};
+
+export const stopTyping = (socket, userName, userColor) => dispatch => {
+  dispatch({ type: USER_STOP_TYPING });
+  socket.emit('user_stop_typing', { userName, userColor });
 };
 
 export const listenUserWriting = (socket) => dispatch => {
@@ -42,6 +48,11 @@ export const listenUserWriting = (socket) => dispatch => {
   );
 };
 
+export const listenUserStopWriting = (socket) => dispatch => {
+  socket.on('user_stop_writing', user =>
+    dispatch({ type: REMOVE_USER_ON_TYPING_LIST, payload: { user } })
+  );
+};
 
 const initialState = {
   userName: '',
@@ -82,7 +93,7 @@ export default function reducer(state = initialState, action){
       }
     case REMOVE_USER_ON_TYPING_LIST:
       const usersTypingList = state.usersTypingList.filter(user => {
-         if(user.userName !== action.payload.newMessage.userName) {
+         if(user.userName !== action.payload.user.userName) {
            return user;
          }
       });

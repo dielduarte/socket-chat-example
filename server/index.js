@@ -16,4 +16,8 @@ io.on('connection', function (socket) {
   socket.on('user_start_typing', function (data) {
     socket.broadcast.emit('new_user_writing', data);
   });
+
+  socket.on('user_stop_typing', function (data) {
+    socket.broadcast.emit('user_stop_writing', data);
+  });
 });

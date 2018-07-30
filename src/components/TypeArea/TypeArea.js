@@ -24,6 +24,11 @@ class TypeArea extends PureComponent {
         { isTyping: true }, 
         () => this.props.onChange()
       );
+    } else if (this.refs.typeArea.value === '') {
+      this.setState(
+        { isTyping: true },
+        () => this.props.onUserStopWriting()
+      );
     }
   }
 
